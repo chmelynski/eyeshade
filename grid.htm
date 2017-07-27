@@ -1,0 +1,173 @@
+<html>
+<head>
+<title>grid</title>
+<style>
+
+.grid-column-row { margin: 1em 0 0 0.5em; }
+.grid-column-row input { margin-left: 0.5em; }
+.grid-column-row button { margin-left: 0.5em; }
+
+.grid-column-header { margin: 1em 0 0 0; }
+.grid-column-header span { font-weight: bold; text-align: center; }
+.grid-column-header span:nth-child(1) { margin-left: 5em; }
+.grid-column-header span:nth-child(2) { margin-left: 5em; }
+.grid-column-header span:nth-child(3) { margin-left: 5em; }
+.grid-column-header span:nth-child(4) { margin-left: 5em; }
+.grid-column-header span:nth-child(5) { margin-left: 5em; }
+.grid-column-header span:nth-child(6) { margin-left: 5em; }
+
+canvas:focus { outline: none; }
+
+</style>
+</head>
+<body>
+
+<script src='grid.js'></script>
+
+<div style="margin: 1em">
+<button onclick='Download("tsv")'>Download TSV</button>
+<button onclick='Upload("tsv")'>Upload TSV</button>
+<button onclick='Download("json")'>Download JSON</button>
+<button onclick='Upload("json")'>Upload JSON</button>
+<span id="debug"></span>
+</div>
+<div id="container" style="position: absolute; top: 3em; left: 2em; width: 80em; height: 35em;"></div>
+<div id="cells-container"></div> <!-- this is for the scrollTop fiddling -->
+
+<script>
+
+function Upload(format) {
+	
+	var fileChooser = document.createElement('input');
+	fileChooser.type = 'file';
+	
+	fileChooser.onchange = function() {
+		
+		var fileReader = new FileReader();
+		
+		fileReader.onload = function(event) {
+			
+			var text = event.target.result;
+			
+			var objs = null;
+			var headers = null;
+			
+			if (format == 'json')
+			{
+				objs = JSON.parse(text);
+				headers = [];
+				for (var key in objs[0]) { headers.push(key); }
+			}
+			else if (format == 'tsv')
+			{
+				var matrix = text.trim().split('\n').map(function(line) { return line.split('\t'); });
+				
+				headers = matrix[0];
+				
+				var objs = [];
+				
+				for (var i = 1; i < matrix.length; i++)
+				{
+					var obj = {};
+					
+					for (var k = 0; k < matrix[i].length; k++)
+					{
+						obj[headers[k]] = matrix[i][k];
+					}
+					
+					objs.push(obj);
+				}
+			}
+			
+			data._headers = headers;
+			data._data = objs;
+			grid._columnParams = data._headers.map(function(header) { return { header: header, visible: true, width: 64, formula: '', format: null, style: null }; });
+			grid._resetData();
+		};
+		
+		fileReader.readAsText(fileChooser.files[0]);
+	};
+	
+	fileChooser.click();
+}
+function Download(format) {
+	
+	var text = grid._writeData(format);
+	var blob = new Blob([text],{type:'text/plain'});
+	var fileReader = new FileReader();
+	
+	fileReader.onload = function(event) {
+		var a = document.createElement('a');
+		a.href = event.target.result;
+		a.download = 'filename.' + format;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	};
+	
+	fileReader.readAsDataURL(blob);
+}
+
+var objs = [];
+var columns = [];
+var headers = [];
+
+function RandomData() {
+	
+	var rows = 100;
+	var cols = 24;
+	
+	for (var i = 0; i < cols; i++)
+	{
+		headers.push(String.fromCharCode(65 + i));
+		
+		columns.push({
+			header: String.fromCharCode(65 + i),
+			visible: true,
+			width: 64,
+			formula: '',
+			format: null,
+			style: null
+		});
+	}
+	
+	for (var i = 0; i < rows; i++)
+	{
+		var obj = {};
+		
+		for (var k = 0; k < columns.length; k++)
+		{
+			obj[columns[k].header] = Math.floor(Math.random() * 100);
+		}
+		
+		objs.push(obj);
+	}
+}
+function SmallData() {
+	objs = [{A:1,B:2,C:3,D:4},{A:5,B:6,C:7,D:8},{A:9,B:10,C:11,D:12}];
+	columns = [];
+	headers = ['A','B','C','D'];
+}
+
+RandomData();
+
+var data = {
+	_data: objs,
+	_headers: headers,
+	_markDirty: function() { },
+	_runAfterChange: function() { },
+	gridParams: {
+		filter: '',
+		sort: '',
+		multisort: [],
+		columns: columns
+	},
+};
+
+var div = document.getElementById('container');
+var grid = new Eyeshade.Grid(data, div);
+
+</script>
+</body>
+</html>
+

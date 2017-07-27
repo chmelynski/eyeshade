@@ -1,0 +1,156 @@
+
+<html>
+<head>
+<style>
+h4 { margin: 1em; }
+table { border-collapse: collapse; margin: 1em; }
+th { border: 1px solid gray; padding: 0.5em; }
+td { border: 1px solid gray; padding: 0.5em; }
+</style>
+</head>
+<body>
+
+<h3>Hyperdeck Grids</h3>
+
+<p>
+
+The grid attempts to use commonly known spreadsheet mechanics, but has been optimized to accomodate large data sets, at the expense of some flexibility.  For example, formulas, formats, and styles are defined for whole columns, not for individual cells.  Header cells are selectable - row/col operations like sorting, moving, hiding, and showing are managed by arrow commands entered while a header cell is selected.
+
+</p>
+
+<hr>
+
+<h4>Value cell selected</h4>
+
+<p>Arrow moves the cursor, Shift extends selection, Ctrl moves to the edge</p>
+<table>
+<tr><th>Arrow</th><td>Move Cursor</td></tr>
+<tr><th>Ctrl+Arrow</th><td>Move Cursor To Edge (or jump to header if already at top/left edge)</td></tr>
+<tr><th>Shift+Arrow</th><td>Extend Selection</td></tr>
+<tr><th>Ctrl+Shift+Arrow</th><td>Extend Selection To Edge</td></tr>
+</table>
+
+<p>Ctrl/Shift+Space selects whole row/col/grid ranges</p>
+<table>
+<tr><th>Ctrl+Space</th><td>Select Whole Col</td></tr>
+<tr><th>Shift+Space</th><td>Select Whole Row</td></tr>
+<tr><th>Ctrl+Shift+Space</th><td>Select Whole Grid</td></tr>
+</table>
+
+<p>Space begins edit, or just start entering a new value</p>
+<table>
+<tr><th>Space</th><td>Edit Cell<span style="color:lightgray"> / Edit Range as TSV</span></td></tr>
+<tr><th>A-Z,a-z,0-9,other printable chars</th><td>Edit Cell, deleting existing value and beginning entry of new value</td></tr>
+</table>
+
+<p>Alt+Arrow commands are used for structural changes that add/delete rows/cols</p>
+<table>
+<tr><th></th><th>Alt+Arrow</th><th>Alt+Shift+Arrow</th></tr>
+<tr><th>Up</th>   <td>Add New Row Above</td><td>Delete Row</td></tr>
+<tr><th>Right</th><td>Add New Col Right</td><td>Delete Col</td></tr>
+<tr><th>Down</th> <td>Add New Row Below</td><td>Delete Row</td></tr>
+<tr><th>Left</th> <td>Add New Col Left</td> <td>Delete Col</td></tr>
+</table>
+
+<p>To copy and paste data from external sources to and from the grid, edit ranges (coming soon)</p>
+<table>
+<tr><th>F2</th><td>Edit Cell</td></tr>
+<tr><th>F3</th><td style="color:lightgray">Edit Range As TSV (this is how you copy and paste external data)</td></tr>
+<tr><th>F4</th><td style="color:lightgray">Edit Range As CSV</td></tr>
+<tr><th>F5</th><td style="color:lightgray">Edit Range As JSON</td></tr>
+<tr><th>F6</th><td style="color:lightgray">Edit Range As YAML</td></tr>
+</table>
+
+<p>Standard cut, copy, and paste only work within the grid - these commands don't actually copy data to the system clipboard</p>
+<table>
+<tr><th>Ctrl+C</th><td>Copy (internal only)</td></tr>
+<tr><th>Ctrl+X</th><td>Cut (internal only)</td></tr>
+<tr><th>Ctrl+V</th><td>Paste (internal only)</td></tr>
+</table>
+
+<p>Formulas, formats, and styles are defined for columns, not for cells.  The filter formula filters the entire grid.</p>
+<table>
+<tr><th>Ctrl+F</th><td>Edit Column Formula (a javascript expression executed for each row - within the expression, 'this' refers to the data object backing the whole grid - a list of objects - and 'i' refers to the row index.  Therefore, use this[i].A to refer to the value in column A of the same row, sort of like you would in a for loop.)</td></tr>
+<tr><th>Ctrl+R</th><td>Edit Column Format (sprintf style, e.g. %03f)</td></tr>
+<tr><th>Ctrl+S</th><td>Edit Column Styles (a JSON object)</td></tr>
+<tr><th>Ctrl+L</th><td>Edit Filter Formula (a javascript expression that is passed as the predicate to a filter function - within the expression, 'this' refers to the data object corresponding to a given row - e.g. this.A &lt; 10 would filter on values in column A)</td></tr>
+</table>
+
+<hr>
+
+<h4>Header cell selected</h4>
+
+<p>When header cells are selected, Arrow and Ctrl/Shift+Arrow act to move the cursor and extend selection just as when value cells are selected.  Column headers may be edited to change the column name.</p>
+<table>
+<tr><th>Arrow</th><td>Move Cursor</td></tr>
+<tr><th>Ctrl+Arrow</th><td>Move Cursor To Edge</td></tr>
+<tr><th>Shift+Arrow</th><td>Extend Selection</td></tr>
+<tr><th>Ctrl+Shift+Arrow</th><td>Extend Selection To Edge</td></tr>
+<tr><th>Space</th><td>Edit Cell</td></tr>
+</table>
+
+<!--
+<table>
+<tr><th></th><th>Col Header</th><th>Row Header</th></tr>
+<tr><th>Left</th><td>Move Cursor</td><td>-</td></tr>
+<tr><th>Right</th><td>Move Cursor</td><td>Move Cursor back to value cells</td></tr>
+<tr><th>Up</th><td>-</td><td>Move Cursor</td></tr>
+<tr><th>Down</th><td>Move Cursor back to value cells</td><td>Move Cursor</td></tr>
+<tr><th>Shift+Left</th><td>Extend Selection</td><td>-</td></tr>
+<tr><th>Shift+Right</th><td>Extend Selection</td><td>-</td></tr>
+<tr><th>Shift+Up</th><td>-</td><td>Extend Selection</td></tr>
+<tr><th>Shift+Down</th><td>-</td><td>Extend Selection</td></tr>
+<tr><th>Ctrl+Left</th><td>Move Cursor to Edge</td><td>-</td></tr>
+<tr><th>Ctrl+Right</th><td>Move Cursor to Edge</td><td>-</td></tr>
+<tr><th>Ctrl+Up</th><td>Sort Col Ascending</td><td>Move Cursor to Edge</td></tr>
+<tr><th>Ctrl+Down</th><td>Sort Col Descending</td><td>Move Cursor to Edge</td></tr>
+<tr><th>Ctrl+Shift+Left</th><td>Extend Selection to Edge</td><td>-</td></tr>
+<tr><th>Ctrl+Shift+Right</th><td>Extend Selection to Edge</td><td>-</td></tr>
+<tr><th>Ctrl+Shift+Up</th><td>Add Multisort Ascending</td><td>Extend Selection to Edge</td></tr>
+<tr><th>Ctrl+Shift+Down</th><td>Add Multisort Descending</td><td>Extend Selection to Edge</td></tr>
+</table>
+-->
+
+<p>When a column header is selected, Ctrl+Up/Down sorts the column, Ctrl+Shift+Up/Down adds a multisort level</p>
+<table>
+<tr><th></th><th>Col Header Selected</th></tr>
+<tr><th>Ctrl+Up</th><td>Sort Col Ascending</td></tr>
+<tr><th>Ctrl+Down</th><td>Sort Col Descending</td></tr>
+<tr><th>Ctrl+Shift+Up</th><td>Add Multisort Ascending</td></tr>
+<tr><th>Ctrl+Shift+Down</th><td>Add Multisort Descending</td></tr>
+</table>
+
+<p>Alt+Arrow makes structural changes - move/hide/show</p>
+<table>
+<tr><th></th><th>Col Header</th><th>Row Header</th></tr>
+<tr><th>Alt+Left</th><td>Move Cols Left</td><td>Hide Rows</td></tr>
+<tr><th>Alt+Right</th><td>Move Cols Right</td><td>Show Rows</td></tr>
+<tr><th>Alt+Up</th><td>Hide Cols</td><td>Move Rows Up</td></tr>
+<tr><th>Alt+Down</th><td>Show Cols</td><td>Move Rows Down</td></tr>
+</table>
+
+<hr>
+
+<h4>Scrolling</h4>
+
+<p>Ctrl/Shift/Alt modulates scroll magnitude</p>
+
+<table>
+<tr><th>Shift+Scroll</th><td>Scroll rows by 1</td></tr>
+<tr><th>Scroll</th><td>Scroll rows by 10</td></tr>
+<tr><th>Ctrl+Scroll</th><td>Scroll rows by 100</td></tr>
+<tr><th>Ctrl+Shift+Scroll</th><td>Scroll rows by 1000</td></tr>
+<tr><th>Ctrl+Shift+Alt+Scroll</th><td>Scroll rows by 10000</td></tr>
+</table>
+
+<table>
+<tr><th>Shift+Page Down/Up</th><td>Scroll rows by 1</td></tr>
+<tr><th>Page Down/Up</th><td>Scroll rows by 10</td></tr>
+<tr><th>Ctrl+Page Down/Up</th><td>Scroll rows by 100</td></tr>
+<tr><th>Ctrl+Shift+Page Down/Up</th><td>Scroll rows by 1000</td></tr>
+<tr><th>Ctrl+Shift+Alt+Page Down/Up</th><td>Scroll rows by 10000</td></tr>
+</table>
+
+</body>
+</html>
+
